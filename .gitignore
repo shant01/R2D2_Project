@@ -1,8 +1,16 @@
 # Ignore Python virtual environment files
-venv/
+backend/venv
+backend/env/
+backend/.venv/
+backend/.env/
+
+# Python compiled files
+backend/app/__pycache__/
+*.pyc
+*.pyo
 
 # Ignore Node.js dependencies
-node_modules/
+frontend/node_modules/
 
 # Ignore build artifacts
 build/
@@ -12,6 +20,11 @@ dist/
 # Ignore environment configuration files (e.g., .env for environment variables)
 .env
 
+# Dependency directories
+backend/venv/lib/
+lib64/
+site-packages/
+
 # Ignore operating system-specific files
 .DS_Store
 Thumbs.db
@@ -19,3 +32,8 @@ Thumbs.db
 # Ignore user-specific files or directories
 *.log
 
+# User-specific files
+.DS_Store
+.vscode/*
+.idea/*
+.gitignore
