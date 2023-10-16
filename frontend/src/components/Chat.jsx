@@ -5,18 +5,44 @@ import { ChatBubble } from "./ChatBubble";
 export function Chat() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [response, setResponse] = useState("");
+  const apiUrl = "http://localhost:8000/api/chat";
 
-  const sendMessage = () => {
+  const getResponse = async () => {
+    // Declare the function as async
+    try {
+      const response = await fetch(apiUrl, {
+        method: "GET", // Use GET method to retrieve data
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      // Update the messages with the received response
+      setResponse(data.message);
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
+  };
+
+  const sendMessage = async () => {
+    await getResponse(); // Wait for the response from the server
+
     if (currentMessage) {
       setMessages([
         ...messages,
         { type: "user", content: currentMessage },
         {
           type: "response",
-          content: "Some test Response",
+          content: response,
         },
       ]);
-      setCurrentMessage("");
     }
   };
 
