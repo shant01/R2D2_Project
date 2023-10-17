@@ -9,49 +9,53 @@ export function Chat() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const apiUrl = "http://localhost:8000/api/chat";
+  const apiUrl = "http://localhost:8000/api/competitor-research";
 
   const fetchDataFromAPI = async () => {
     try {
-      setLoading(true);
-
-      const apiUrl = "http://localhost:8000/api/ask-openai";
+      // Define the request body
       const requestBody = {
-        text: currentMessage,
+        task: currentMessage,
+        task: "competitor_research"
       };
 
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      // Send an HTTP POST request to your FastAPI backend
+      const response = await fetch(
+        "http://localhost:8000/api/competitor-research",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      setResponse(data.response);
-      setError("");
+      setResponse(data.result);
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
-      setError("There was an error processing your request. Please try again.");
+      setError("Error fetching data from the API.");
     } finally {
       setLoading(false);
     }
   };
 
   const sendMessage = async () => {
-    await fetchDataFromAPI();
+    setLoading(true); // Start loading
+
+    await fetchDataFromAPI(currentMessage);
 
     if (currentMessage) {
       setMessages([
         ...messages,
         { type: "user", content: currentMessage },
         {
-          type: "response",
+          task: "response",
           content: response,
         },
       ]);
@@ -87,6 +91,7 @@ export function Chat() {
             value={currentMessage}
             onChange={(e) => setCurrentMessage(e.target.value)}
             placeholder="Type your message..."
+            disabled={loading} // Disable input while loading
           />
           <button
             onClick={sendMessage}
@@ -102,49 +107,3 @@ export function Chat() {
     </div>
   );
 }
-
-// const getResponse = async () => {
-//   // Declare the function as async
-//   try {
-//     const response = await fetch(apiUrl, {
-//       method: "GET", // Use GET method to retrieve data
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error("Network response was not ok");
-//     }
-
-//     const data = await response.json();
-
-//     // Update the messages with the received response
-//     setResponse(data.message);
-//   } catch (error) {
-//     console.error("There was a problem with the fetch operation:", error);
-//   }
-// };
-
-// const connectToOpenAIStream = () => {
-//   const eventSource = new EventSource("http://localhost:8000/stream");
-
-//   eventSource.onmessage = (event) => {
-//     const openaiResponse = event.data;
-//     setResponse(openaiResponse);
-
-//     // Add the OpenAI response to the messages
-//     setMessages((prevMessages) => [
-//       ...prevMessages,
-//       { type: "response", content: openaiResponse },
-//     ]);
-//   };
-
-//   eventSource.onerror = (error) => {
-//     console.error("Error connecting to OpenAI stream:", error);
-//   };
-// };
-
-// useEffect(() => {
-//   connectToOpenAIStream();
-// }, []);
