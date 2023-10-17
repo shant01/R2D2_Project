@@ -20,29 +20,6 @@ class CompetitorResearchInput(BaseModel):
 class UserInput(BaseModel):
     text: str
 
-
-@router.post("/api/ask-openai", response_model=dict)
-async def ask_openai(input: UserInput):
-    try:
-        user_text = input.text
-
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-                {"role": "user", "content": user_text}
-            ]
-        )
-
-        openai_response = response.choices[0].text  # Get the first response
-
-        return {"response": openai_response}
-
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        raise HTTPException(status_code=500, detail="An error occurred.")
-
-
 ################################# Market GPT #################################
 # Define a Pydantic model to parse input data
 
@@ -70,22 +47,22 @@ async def perform_competitor_research(input_data: CompetitorResearchInput):
 ################################# Market GPT #################################
 
 
-@router.post("/api/check-openai")
-async def check_openai():
-    try:
-        # Send a test request to OpenAI
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-                {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
-            ]
-        )
+# @router.post("/api/check-openai")
+# async def check_openai():
+#     try:
+#         # Send a test request to OpenAI
+#         response = openai.ChatCompletion.create(
+#             model="gpt-3.5-turbo",
+#             messages=[
+#                 {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
+#                 {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
+#             ]
+#         )
 
-        print(response.choices[0].text)
+#         print(response.choices[0].text)
 
-        # If successful, return the response
-        return {"message": "OpenAI API is working.", "response": response.choices[0].text}
-    except Exception as e:
-        # If there's an error, return an error message
-        return {"message": "OpenAI API is not working.", "error": str(e)}
+#         # If successful, return the response
+#         return {"message": "OpenAI API is working.", "response": response.choices[0].text}
+#     except Exception as e:
+#         # If there's an error, return an error message
+#         return {"message": "OpenAI API is not working.", "error": str(e)}
