@@ -47,7 +47,7 @@ async def ask_openai(input: UserInput):
 # Define a Pydantic model to parse input data
 
 # Create an API endpoint for competitor research
-@app.post("/api/competitor-research")
+@router.post("/api/competitor-research")
 async def perform_competitor_research(input_data: CompetitorResearchInput):
     try:
         # Send the task to the OpenAI GPT model
