@@ -1,4 +1,4 @@
-### R2D2_Project
+# R2D2_Project
 
 A web application that takes user input and performs market research based on the user's specified criteria.
 
@@ -10,8 +10,7 @@ A web application that takes user input and performs market research based on th
 - [Backend](#backend)
   - [Installation](#installation-1)
   - [Running](#running-1)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ---
 
@@ -22,6 +21,13 @@ To install the necessary dependencies for the frontend, navigate to the 'fronten
 
 ```bash
 npm install
+```
+
+### Running
+To run the frontend, navigate to the 'frontend' directory in your terminal and execute:
+
+```bash
+npm start
 ```
 
 ## Backend
@@ -39,7 +45,7 @@ Install Python Packages
 ```bash
 pip install -r requirements.txt
 ```
-##Running
+## Running
 While still inside the 'backend' directory and with the virtual environment activated, navigate to the 'app' folder and run the following command to start the backend server using Uvicorn:
 
 ```bash
