@@ -8,9 +8,22 @@ export function Chat() {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [hasStartedTyping, setHasStartedTyping] = useState(false);
 
   const apiUrl = "http://localhost:8000/api/competitor-research";
-  const apiToken = process.env.OPENAI_API_KEY
+  const apiToken = process.env.OPENAI_API_KEY;
+
+  const handleInputChange = (e) => {
+    if (!hasStartedTyping) {
+      setCurrentMessage(
+        "Provide an in-depth analysis, product details, and financial analysis of " +
+          e.target.value
+      );
+      setHasStartedTyping(true);
+    } else {
+      setCurrentMessage(e.target.value);
+    }
+  };
 
   const sendMessage = async () => {
     setLoading(true); // Start loading
@@ -25,8 +38,7 @@ export function Chat() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer ${apiToken}",
+          Authorization: "Bearer ${apiToken}",
         },
         body: JSON.stringify(requestBody),
       };
@@ -84,9 +96,13 @@ export function Chat() {
           <input
             className="flex-1 p-2 rounded-md"
             value={currentMessage}
-            onChange={(e) => setCurrentMessage(e.target.value)}
-            placeholder="Type your message..."
-            disabled={loading} // Disable input while loading
+            onChange={handleInputChange}
+            placeholder={
+              !hasStartedTyping
+                ? "Provide an in-depth analysis, product details, and financial analysis of "
+                : ""
+            }
+            disabled={loading}
           />
           <button
             onClick={sendMessage}
