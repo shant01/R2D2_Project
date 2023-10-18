@@ -1,8 +1,8 @@
-# from backend.models.user_input import UserInput
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from openai_routes import router as openai_router # Corrected import
 import os
+
 app = FastAPI()
 
 origins = [

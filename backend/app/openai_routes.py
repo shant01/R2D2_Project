@@ -22,7 +22,7 @@ class UserInput(BaseModel):
 async def perform_competitor_research(input: UserInput): 
     # Customize Chatbot
     messages = [{"role": "system",
-                 "content": "You are a financial experts that specializes in real estate investment and negotiation"}]
+                 "content": "You are a competitive market research specialist. You have deep analytical skills, industy knowledge, and are responsible for competitor profiling, trend analysis, and forecasting market shifts. With this in mind perform competitor research with the following prompts. "}]
 
     try:
         messages.append(

@@ -45,7 +45,7 @@ Install Python Packages
 ```bash
 pip install -r requirements.txt
 ```
-## Running
+### Running
 While still inside the 'backend' directory and with the virtual environment activated, navigate to the 'app' folder and run the following command to start the backend server using Uvicorn:
 
 ```bash
@@ -54,3 +54,10 @@ uvicorn main:app --reload
 The backend server will be accessible at http://localhost:8000.
 
 Make sure both the frontend and backend servers are running to use the application effectively.
+
+## AWS
+
+```bash 
+chmod 400 Downloads/Shant\'s\ Key.pem
+ssh -i "/Users/hova/Downloads/Shant's Key.pem" ec2-user@3.134.118.161
+```
