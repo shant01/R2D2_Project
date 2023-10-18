@@ -10,57 +10,52 @@ export function Chat() {
   const [error, setError] = useState("");
 
   const apiUrl = "http://localhost:8000/api/competitor-research";
+  const apiToken = process.env.OPENAI_API_KEY
 
-  const fetchDataFromAPI = async () => {
+  const sendMessage = async () => {
+    setLoading(true); // Start loading
+
     try {
       // Define the request body
       const requestBody = {
-        task: currentMessage,
-        task: "competitor_research"
+        input: currentMessage,
       };
 
-      // Send an HTTP POST request to your FastAPI backend
-      const response = await fetch(
-        "http://localhost:8000/api/competitor-research",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
-        }
-      );
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer ${apiToken}",
+        },
+        body: JSON.stringify(requestBody),
+      };
+
+      // Make the fetch request
+      const response = await fetch(apiUrl, requestOptions);
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      setResponse(data.result);
+      const result = await response.text();
+      setResponse(result);
+
+      setMessages([
+        ...messages,
+        { type: "user", content: currentMessage },
+        {
+          type: "response",
+          content: result,
+        },
+      ]);
+
+      setCurrentMessage("");
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
       setError("Error fetching data from the API.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const sendMessage = async () => {
-    setLoading(true); // Start loading
-
-    await fetchDataFromAPI(currentMessage);
-
-    if (currentMessage) {
-      setMessages([
-        ...messages,
-        { type: "user", content: currentMessage },
-        {
-          task: "response",
-          content: response,
-        },
-      ]);
-
-      setCurrentMessage("");
     }
   };
 

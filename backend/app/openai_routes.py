@@ -13,56 +13,36 @@ print(os.getenv("OPENAI_API_KEY"))
 openai.Model.list()
 
 
-class CompetitorResearchInput(BaseModel):
-    task: str
-
 
 class UserInput(BaseModel):
-    text: str
+    input: str
 
 ################################# Market GPT #################################
 # Define a Pydantic model to parse input data
 
 # Create an API endpoint for competitor research
+
+
 @router.post("/api/competitor-research")
-async def perform_competitor_research(input_data: CompetitorResearchInput):
+# input_data: CompetitorResearchInput, user_input
+async def perform_competitor_research(input: UserInput): 
+    print(input)
+    # Customize Chatbot
+    messages = [{"role": "system",
+                 "content": "You are a financial experts that specializes in real estate investment and negotiation"}]
+
     try:
-        # Send the task to the OpenAI GPT model
-        response = openai.Completion.create(
-            engine="text-davinci-002",
-            prompt=input_data.task,
-            max_tokens=50,  # Adjust the number of tokens as needed
-            n=1,             # Number of responses to generate
-            stop=None        # List of stop words to end the response
+        messages.append(
+            {"role": "user", "content": input.input})
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages
         )
-
-        # Extract the generated response from the OpenAI response
-        generated_response = response.choices[0].text.strip()
-
-        return {"result": generated_response}
+        ChatGPT_reply = response.choices[0].message.content
+        messages.append({"role": "assistant", "content": ChatGPT_reply})
+        return ChatGPT_reply
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail="An error occurred while processing the task.")
+            status_code=500, detail="An error occurred while processing the task.") 
 ################################# Market GPT #################################
-
-
-# @router.post("/api/check-openai")
-# async def check_openai():
-#     try:
-#         # Send a test request to OpenAI
-#         response = openai.ChatCompletion.create(
-#             model="gpt-3.5-turbo",
-#             messages=[
-#                 {"role": "system", "content": "You are a poetic assistant, skilled in explaining complex programming concepts with creative flair."},
-#                 {"role": "user", "content": "Compose a poem that explains the concept of recursion in programming."}
-#             ]
-#         )
-
-#         print(response.choices[0].text)
-
-#         # If successful, return the response
-#         return {"message": "OpenAI API is working.", "response": response.choices[0].text}
-#     except Exception as e:
-#         # If there's an error, return an error message
-#         return {"message": "OpenAI API is not working.", "error": str(e)}
