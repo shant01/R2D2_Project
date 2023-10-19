@@ -3,15 +3,6 @@ import { Container } from "./Container";
 import { ChatBubble } from "./ChatBubble";
 
 export function Chat() {
-  const [messages, setMessages] = useState([]);
-  const [currentMessage, setCurrentMessage] = useState("");
-  const [selectedOption, setSelectedOption] = useState("Market Research");
-
-  const [response, setResponse] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [hasStartedTyping, setHasStartedTyping] = useState(false);
-
   const optionPrompts = {
     "Market Research":
       "Provide an in-depth analysis, product details, and financial analysis of ",
@@ -20,35 +11,48 @@ export function Chat() {
     "Social Media Posting": "Provide details for a social media post about ",
   };
 
+  const [messages, setMessages] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("Market Research");
+  const [currentMessage, setCurrentMessage] = useState(
+    optionPrompts[selectedOption]
+  );
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const currentPrompt = optionPrompts[selectedOption];
+
   const apiUrl = "http://localhost:8000/api/competitor-research";
   const apiToken = process.env.OPENAI_API_KEY;
 
   const handleInputChange = (e) => {
-    if (!hasStartedTyping) {
-      setCurrentMessage(
-        "Provide an in-depth analysis, product details, and financial analysis of " +
-          e.target.value
-      );
-      setHasStartedTyping(true);
+    const value = e.target.value;
+
+    // Check if the value starts with any of the prompts.
+    const matchesPrompt = Object.values(optionPrompts).some((prompt) =>
+      value.startsWith(prompt)
+    );
+
+    if (matchesPrompt) {
+      setCurrentMessage(value);
     } else {
-      setCurrentMessage(e.target.value);
+      setCurrentMessage(optionPrompts[selectedOption]);
     }
   };
-  const currentPrompt = optionPrompts[selectedOption];
 
   const handleDropdownChange = (e) => {
-    setSelectedOption(e.target.value);
-    setHasStartedTyping(false); // Reset the typing status when the option changes
+    const selected = e.target.value;
+    setSelectedOption(selected);
+    setCurrentMessage(optionPrompts[selected]);
   };
 
   const sendMessage = async () => {
     setLoading(true); // Start loading
 
     try {
-      // Define the request body
       const requestBody = {
         input: currentMessage,
-        task_type: selectedOption
+        task_type: selectedOption,
       };
 
       const requestOptions = {
@@ -60,7 +64,6 @@ export function Chat() {
         body: JSON.stringify(requestBody),
       };
 
-      // Make the fetch request
       const response = await fetch(apiUrl, requestOptions);
 
       if (!response.ok) {
@@ -110,21 +113,23 @@ export function Chat() {
       </Container>
       <div className="fixed bottom-0 w-full pb-4 items-center bg-gradient-to-b from-white to-gray-200">
         <Container className="flex bg-white shadow-md rounded-md p-2 shadow-gray-400">
-        <select 
-            value={selectedOption} 
+          <select
+            value={selectedOption}
             onChange={handleDropdownChange}
-            className="mr-2 p-2 rounded-md shadow-md bg-gray-100">
+            className="mr-2 p-2 rounded-md shadow-md bg-gray-100"
+          >
             <option value="Market Research">Market Research</option>
-            <option value="Personalized Email Outreach">Personalized Email Outreach</option>
+            <option value="Personalized Email Outreach">
+              Personalized Email Outreach
+            </option>
             <option value="Social Media Posting">Social Media Posting</option>
-        </select>
-        <input
-          className="flex-1 p-2 rounded-md shadow-md"
-          value={currentMessage}
-          onChange={handleInputChange}
-          placeholder={!hasStartedTyping ? currentPrompt : ""}
-          disabled={loading}
-        />
+          </select>
+          <input
+            className="flex-1 p-2 rounded-md shadow-md"
+            value={currentMessage}
+            onChange={handleInputChange}
+            disabled={loading}
+          />
           <button
             onClick={sendMessage}
             className="ml-2 bg-blue-500 text-white p-2 rounded-md"
@@ -133,8 +138,10 @@ export function Chat() {
             Send
           </button>
         </Container>
-        {loading && <p>Loading...</p>} {/* Display loading indicator */}
-        {error && <p>{error}</p>} {/* Display error message */}
+        <Container>
+          {loading && <p>Loading...</p>} {/* Display loading indicator */}
+          {error && <p>{error}</p>} {/* Display error message */}
+        </Container>
       </div>
     </div>
   );

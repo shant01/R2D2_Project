@@ -1,5 +1,4 @@
 from fastapi import APIRouter,  HTTPException
-from fastapi.responses import StreamingResponse
 
 import openai
 import os
@@ -16,11 +15,8 @@ class UserInput(BaseModel):
     input: str
     task_type: str
 
-################################# Market GPT #################################
-
 
 @router.post("/api/competitor-research")
-# input_data: CompetitorResearchInput, user_input
 async def perform_competitor_research(input: UserInput):
     # Customize Chatbot
 
@@ -30,7 +26,6 @@ async def perform_competitor_research(input: UserInput):
         "Social Media Posting": "You are a social media guru. Crafting engaging posts is second nature to you. Create a captivating social media post using the following prompts."
     }
 
-# Select the appropriate system message
     system_message = system_messages.get(input.task_type, "Invalid task type.")
 
     messages = [{"role": "system", "content": system_message}]
@@ -49,4 +44,3 @@ async def perform_competitor_research(input: UserInput):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail="An error occurred while processing the task.")
-################################# Market GPT #################################
