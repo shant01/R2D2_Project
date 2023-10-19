@@ -5,10 +5,20 @@ import { ChatBubble } from "./ChatBubble";
 export function Chat() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [selectedOption, setSelectedOption] = useState("Market Research");
+
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
+
+  const optionPrompts = {
+    "Market Research":
+      "Provide an in-depth analysis, product details, and financial analysis of ",
+    "Personalized Email Outreach":
+      "Provide details for personalized email outreach regarding ",
+    "Social Media Posting": "Provide details for a social media post about ",
+  };
 
   const apiUrl = "http://localhost:8000/api/competitor-research";
   const apiToken = process.env.OPENAI_API_KEY;
@@ -24,6 +34,12 @@ export function Chat() {
       setCurrentMessage(e.target.value);
     }
   };
+  const currentPrompt = optionPrompts[selectedOption];
+
+  const handleDropdownChange = (e) => {
+    setSelectedOption(e.target.value);
+    setHasStartedTyping(false); // Reset the typing status when the option changes
+  };
 
   const sendMessage = async () => {
     setLoading(true); // Start loading
@@ -32,6 +48,7 @@ export function Chat() {
       // Define the request body
       const requestBody = {
         input: currentMessage,
+        task_type: selectedOption
       };
 
       const requestOptions = {
@@ -93,17 +110,21 @@ export function Chat() {
       </Container>
       <div className="fixed bottom-0 w-full pb-4 items-center bg-gradient-to-b from-white to-gray-200">
         <Container className="flex bg-white shadow-md rounded-md p-2 shadow-gray-400">
-          <input
-            className="flex-1 p-2 rounded-md"
-            value={currentMessage}
-            onChange={handleInputChange}
-            placeholder={
-              !hasStartedTyping
-                ? "Provide an in-depth analysis, product details, and financial analysis of "
-                : ""
-            }
-            disabled={loading}
-          />
+        <select 
+            value={selectedOption} 
+            onChange={handleDropdownChange}
+            className="mr-2 p-2 rounded-md shadow-md bg-gray-100">
+            <option value="Market Research">Market Research</option>
+            <option value="Personalized Email Outreach">Personalized Email Outreach</option>
+            <option value="Social Media Posting">Social Media Posting</option>
+        </select>
+        <input
+          className="flex-1 p-2 rounded-md shadow-md"
+          value={currentMessage}
+          onChange={handleInputChange}
+          placeholder={!hasStartedTyping ? currentPrompt : ""}
+          disabled={loading}
+        />
           <button
             onClick={sendMessage}
             className="ml-2 bg-blue-500 text-white p-2 rounded-md"
