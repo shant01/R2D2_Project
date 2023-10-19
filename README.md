@@ -56,8 +56,3 @@ The backend server will be accessible at http://localhost:8000.
 Make sure both the frontend and backend servers are running to use the application effectively.
 
 ## AWS
-
-```bash 
-chmod 400 Downloads/Shant\'s\ Key.pem
-ssh -i "/Users/hova/Downloads/Shant's Key.pem" ec2-user@3.134.118.161
-```
