@@ -6,7 +6,6 @@ from pydantic import BaseModel
 
 
 router = APIRouter()
-
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.Model.list()
 
@@ -42,5 +41,6 @@ async def perform_competitor_research(input: UserInput):
         return ChatGPT_reply
 
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=500, detail="An error occurred while processing the task.")
