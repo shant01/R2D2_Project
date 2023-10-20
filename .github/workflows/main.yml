@@ -19,7 +19,7 @@ jobs:
 
 
       - name: Change Directory
-        run: cd /backend
+        run: cd backend/
       # Step-1 Setup Python
       - name: Set up Python
         # This action sets up a Python environment for use in actions
