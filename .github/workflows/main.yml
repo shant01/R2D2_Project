@@ -16,8 +16,6 @@ jobs:
       # Check out repo so our workflow can access it
       - uses: actions/checkout@v2
 
-
-
       - name: Change Directory
         run: cd backend/
       # Step-1 Setup Python
@@ -29,9 +27,8 @@ jobs:
           # optional: architecture: x64 x64 or x86. Defaults to x64 if not specified
 
       # Step-2 Install Python Virtual ENV
-      - name: Install Python Virtual ENV 
+      - name: Install Python Virtual ENV
         run: pip3 install virtualenv
-
 
       # Step-3 Setup Virtual ENV
       # https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
@@ -50,17 +47,16 @@ jobs:
         run: pip install --upgrade pip && python -m venv venv && source venv/bin/activate && pip3 install -r backend/requirements.txt
         if: steps.cache-venv.outputs.cache-hit != 'true'
 
-    
-       - name: Create archive of dependencies
+      - name: Create archive of dependencies
         run: |
           cd backend/venv/lib/python3.11/site-packages
           zip -r9 ../../../api.zip .
-  
+
       - name: Add API files to Zip file
         run: |
           cd backend/app
           zip -g ../api.zip -r .
-  
+
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v2
         with:
