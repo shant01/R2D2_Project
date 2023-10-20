@@ -19,45 +19,31 @@ jobs:
         with:
           python-version: 3.7
 
-      - name: Install Python Virtual ENV
-        run: pip install virtualenv
-
-      - name: Cache Virtual ENV
-        uses: actions/cache@v2
-        id: cache-venv
-        with:
-          path: venv
-          key: ${{ runner.os }}-venv-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-venv-
-
-      - name: Setup and Activate Virtual ENV
-        if: steps.cache-venv.outputs.cache-hit != 'true'
+      - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
+          cd backend
           pip install -r requirements.txt
 
       - name: Run Tests
         run: |
-          source venv/bin/activate
+          cd backend
           pytest tests/
 
       - name: Create archive of dependencies
         run: |
-          cd venv/lib/python3.7/site-packages
+          cd backend/lib/python3.7/site-packages
           zip -r9 ../../api.zip .
 
       - name: Add API files to Zip file
         run: |
-          cd app
+          cd backend/app
           zip -g ../api.zip -r .
 
       - name: Upload zip file artifact
         uses: actions/upload-artifact@v2
         with:
           name: api
-          path: api.zip
+          path: backend/api.zip
 
   CD:
     runs-on: ubuntu-latest
