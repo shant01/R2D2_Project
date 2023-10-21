@@ -10,6 +10,7 @@ A web application that takes user input and performs market research based on th
 - [Backend](#backend)
   - [Installation](#installation-1)
   - [Running](#running-1)
+- [Environment]
 
 
 ---
@@ -55,4 +56,15 @@ The backend server will be accessible at http://localhost:8000.
 
 Make sure both the frontend and backend servers are running to use the application effectively.
 
-## AWS
+## Environment
+From the top level folder on the same level as frontend and backend write the comand
+
+```bash
+touch .env
+```
+
+After creating the .env file open the file and write the line
+
+```bash 
+OPENAI_API_KEY=YOUR_API_KEY
+```

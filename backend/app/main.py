@@ -1,9 +1,9 @@
-from lib.fastapi import FastAPI, HTTPException
-from lib.fastapi.middleware.cors import CORSMiddleware
-from lib.mangum import Mangum
-import libopenai
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
+import openai
 import os
-from lib.pydantic import BaseModel
+from pydantic import BaseModel
 
 app = FastAPI()
 handler = Mangum(app=app)
