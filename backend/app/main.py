@@ -6,7 +6,7 @@ import os
 from pydantic import BaseModel
 
 app = FastAPI()
-handler = Mangum(app=app)
+handler = Mangum(app)
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")

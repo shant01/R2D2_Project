@@ -16,8 +16,6 @@ jobs:
       # Check out repo so our workflow can access it
       - uses: actions/checkout@v2
 
-      - name: Change Directory
-        run: cd backend/
       # Step-1 Setup Python
       - name: Set up Python
         # This action sets up a Python environment for use in actions
@@ -38,7 +36,7 @@ jobs:
         with:
           path: venv # what we cache: the Virtual ENV
           # The cache key depends on requirements.txt
-          key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements*.txt') }}
+          key: ${{ runner.os }}-venv-${{ hashFiles('backend/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-venv-
 
